@@ -1,25 +1,27 @@
-#!/usr/bin/env node
-
-/**
- * Module dependencies.
- */
-
 var app = require('../app');
 var debug = require('debug')('chatapp:server');
 var http = require('http');
 var socketio = require('socket.io');
-
-/**
- * Get port from environment and store in Express.
- */
+var mongoose = require('mongoose');
 
 var port = '3000'
 app.set('port', port);
 
 /**
+ * Mongo DB
+ */
+var Schema = new mongoose.Schema({
+  name: String,
+  message: String,
+  time: Date
+});
+mongoose.model('post', Schema);
+mongoose.connect('mongodb://localhost/nodechat');
+var Post = mongoose.model('post');
+
+/**
  * Create HTTP server.
  */
-
 var server = http.createServer(app);
 
 // サーバをソケットに紐付ける
@@ -27,26 +29,30 @@ var io = socketio.listen(server);
 
 // ブラウザからアクセスがあったときに呼ばれる
 io.sockets.on('connection', function(socket) {
-  socket.on('connected', function(name) {
+  Post.find(function(err, docs){
+    socket.emit('all messages', docs);
+  });
+
+  socket.on('login', function(name) {
     socket.broadcast.emit('user joined', name);
   });
 
   socket.on('post message', function(data) {
     io.sockets.emit('new message', data);
+
+    var post = new Post();
+    post.name = data.name;
+    post.message = data.message;
+    post.time = data.time;
+    post.save(function(err) {
+      if(err) { console.log(err); }
+    });
   });
 });
-
-/**
- * Listen on provided port, on all network interfaces.
- */
 
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
-
-/**
- * Event listener for HTTP server "error" event.
- */
 
 function onError(error) {
   if (error.syscall !== 'listen') {
@@ -71,10 +77,6 @@ function onError(error) {
       throw error;
   }
 }
-
-/**
- * Event listener for HTTP server "listening" event.
- */
 
 function onListening() {
   var addr = server.address();
