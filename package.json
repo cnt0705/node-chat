@@ -1,0 +1,23 @@
+{
+  "name": "node-chat",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/cnt0705/node-chat.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cnt0705/node-chat/issues"
+  },
+  "homepage": "https://github.com/cnt0705/node-chat#readme",
+  "devDependencies": {
+    "express": "^4.15.3",
+    "express-generator": "^4.15.0"
+  }
+}
