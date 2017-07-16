@@ -1,8 +1,98 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
-  padding: 50px;
+  width: 600px;
+  margin: 0 auto;
+  padding: 50px 0;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-a {
-  color: #00B7FF;
+/*Login*/
+.login {
+  text-align: center;
+}
+
+#name {
+  width: 250px;
+  margin: 10px 0 30px;
+  padding: 8px;
+  border: #333 1px solid;
+  border-radius: 3px;
+  font-size: 1.2rem;
+}
+
+#login {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #333;
+  border: none;
+  border-radius: 3px;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  font-size: 1.2rem;
+}
+
+#login:hover {
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+/*Chat*/
+.chat {
+  position: relative;
+}
+
+#username {
+  padding-left: 10px;
+}
+
+#message {
+  width: 50%;
+  margin: 10px 0 30px;
+  padding: 8px;
+  border: #333 1px solid;
+  border-radius: 3px;
+  font-size: 1.2rem;
+}
+
+#timeline {
+  margin-top: 40px;
+  padding: 0;
+}
+
+#timeline > li {
+  display: flex;
+  padding: 15px 0;
+  border-top: #ccc 1px dotted;
+  list-style: none;
+}
+
+#timeline > li > span:first-child {
+  width: 100px;
+  color: #888;
+}
+
+#timeline > li > span:nth-child(2) {
+  flex: 1;
+}
+
+#timeline > li > span:last-child {
+  width: 100px;
+  margin-right: auto;
+  color: #888;
+  text-align: right;
+}
+
+#flash {
+  display: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 10px 20px;
+  border-radius: 3px;
+  background: #333;
+  color: #fff;
 }

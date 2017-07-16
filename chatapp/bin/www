@@ -7,12 +7,13 @@
 var app = require('../app');
 var debug = require('debug')('chatapp:server');
 var http = require('http');
+var socketio = require('socket.io');
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = '3000'
 app.set('port', port);
 
 /**
@@ -21,6 +22,20 @@ app.set('port', port);
 
 var server = http.createServer(app);
 
+// サーバをソケットに紐付ける
+var io = socketio.listen(server);
+
+// ブラウザからアクセスがあったときに呼ばれる
+io.sockets.on('connection', function(socket) {
+  socket.on('connected', function(name) {
+    socket.broadcast.emit('user joined', name);
+  });
+
+  socket.on('post message', function(data) {
+    io.sockets.emit('new message', data);
+  });
+});
+
 /**
  * Listen on provided port, on all network interfaces.
  */
@@ -28,26 +43,6 @@ var server = http.createServer(app);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
-
-/**
- * Normalize a port into a number, string, or false.
- */
-
-function normalizePort(val) {
-  var port = parseInt(val, 10);
-
-  if (isNaN(port)) {
-    // named pipe
-    return val;
-  }
-
-  if (port >= 0) {
-    // port number
-    return port;
-  }
-
-  return false;
-}
 
 /**
  * Event listener for HTTP server "error" event.
