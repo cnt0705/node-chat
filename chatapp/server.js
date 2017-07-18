@@ -1,4 +1,4 @@
-var app = require('../app');
+var app = require('./app');
 var debug = require('debug')('chatapp:server');
 var http = require('http');
 var socketio = require('socket.io');
@@ -7,36 +7,35 @@ var mongoose = require('mongoose');
 var port = '3000'
 app.set('port', port);
 
-/**
- * Mongo DB
- */
+// ドキュメントのスキーマを決める
 var Schema = new mongoose.Schema({
   name: String,
   message: String,
   time: Date
 });
-mongoose.model('post', Schema);
+// DBに接続する
 mongoose.connect('mongodb://localhost/nodechat');
-var Post = mongoose.model('post');
+// Postコンストラクタ
+var Post = mongoose.model('post', Schema);
 
-/**
- * Create HTTP server.
- */
+// HTTPサーバを生成する
 var server = http.createServer(app);
-
 // サーバをソケットに紐付ける
 var io = socketio.listen(server);
 
-// ブラウザからアクセスがあったときに呼ばれる
+// ブラウザからアクセスがあったとき
 io.sockets.on('connection', function(socket) {
+  // DBからすべてのドキュメントをとってくる
   Post.find(function(err, docs){
     socket.emit('all messages', docs);
   });
 
+  // 誰かがログインしたとき
   socket.on('login', function(name) {
     socket.broadcast.emit('user joined', name);
   });
 
+  // 投稿があったとき
   socket.on('post message', function(data) {
     io.sockets.emit('new message', data);
 

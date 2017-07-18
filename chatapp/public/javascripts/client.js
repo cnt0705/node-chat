@@ -1,6 +1,7 @@
 $(function() {
 
-  var socket = io('http://localhost:3000');
+  // ソケットに接続する
+  var socket = io();
 
   var userName = $('#username').text();
   var $timeline = $('#timeline');
@@ -8,6 +9,7 @@ $(function() {
   var $loginBtn = $('#login');
   var $flash = $('#flash');
 
+  // すべてのメッセージを表示する
   socket.on('all messages', function(data) {
     if(!data.length || !$timeline.length) return;
     data.forEach(function(doc) {
@@ -15,6 +17,7 @@ $(function() {
     });
   });
 
+  // 誰かがログインしたときに通知する
   socket.on('user joined', function(name) {
     $flash.text(name + ' joined!');
     $flash.fadeIn('slow', function() {
@@ -22,16 +25,19 @@ $(function() {
     });
   });
 
+  // 新しい投稿を表示する
   socket.on('new message', function(data) {
     addMessage(data)
   });
 
+  // ログインしたとき
   $loginBtn.on('click', function() {
     var name = $('#name').val();
     socket.emit('login', name);
     window.location.href = '/chat/' + name;
   });
 
+  // 投稿するとき
   $msgForm.keypress(function(e) {
     if(e.which !== 13) return;
     var val = $(this).val();
